@@ -9,9 +9,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 
 Private Sub Worksheet_Change(ByVal Target As Range)
-    If Target.Address = Target.Worksheet.Range("TextDateFrom").Address Then
+    If Target.Address = Target.Worksheet.Range("Text_Nt_DateFrom").Address Then
         Set NutritionDashboard.SelectedPlan = New NutritionPlan
-        NutritionDashboard.SelectedPlan.Load Target.Worksheet.Range("TextDateFrom").Value
+        NutritionDashboard.SelectedPlan.Load Target.Worksheet.Range("Text_Nt_DateFrom").Value
         
         NutritionDashboard.FillPlanMealList NutritionDashboard.SelectedPlan
     End If

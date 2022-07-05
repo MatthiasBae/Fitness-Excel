@@ -93,53 +93,16 @@ Public Property Set PlanList(Item As WrapPanel)
     pPlanList Item
 End Property
 
-Public Sub FoodButton_Click(FoodId As Long)
-    Dim FoodItem As New Food
-    FoodItem.Load FoodId
-    
-    Set NutritionDashboard.SelectedFood = FoodItem
-    NutritionDashboard.FillSelectedFoodPanel NutritionDashboard.SelectedFood
-    
-End Sub
-
-Public Sub PlanMealButton_Click(MealId As Integer)
-    Dim MealItem As New NutritionPlanMeal
-    
-    If NutritionDashboard.SelectedPlan Is Nothing Then
-        Set NutritionDashboard.SelectedPlan = New NutritionPlan
-        NutritionDashboard.SelectedPlan.Load Worksheets("Dashboard Ernährung").Range("TextDateFrom")
-    End If
-    
-    Set MealItem = NutritionDashboard.SelectedPlan.Meals(MealId)
-    
-    Set NutritionDashboard.SelectedPlanMeal = MealItem
-    NutritionDashboard.FillPlanMealFoodList NutritionDashboard.SelectedPlanMeal
-End Sub
-
-Public Sub PlanMealButton_Delete_Click(MealId As Integer)
-    Dim MealItem As New NutritionPlanMeal
-    
-    If NutritionDashboard.SelectedPlan Is Nothing Then
-        Set NutritionDashboard.SelectedPlan = New NutritionPlan
-        NutritionDashboard.SelectedPlan.Load Worksheets("Dashboard Ernährung").Range("TextDateFrom")
-    End If
-    
-
-    Set MealItem = NutritionDashboard.SelectedPlan.Meals(MealId)
-    MealItem.Delete
-    NutritionDashboard.SelectedPlan.Meals.Remove MealItem.Id
-    NutritionDashboard.FillPlanMealList NutritionDashboard.SelectedPlan
-End Sub
 Public Sub PleanMealFoodButton_Delete_Click(FoodId As Long)
     Dim MealFoodItem As New NutritionPlanMealFood
     
     If NutritionDashboard.SelectedPlan Is Nothing Then
         Set NutritionDashboard.SelectedPlan = New NutritionPlan
-        NutritionDashboard.SelectedPlan.Load Worksheets("Dashboard Ernährung").Range("TextDateFrom")
+        NutritionDashboard.SelectedPlan.Load Worksheets("Dashboard Ernährung").Range("Text_Nt_DateFrom")
     End If
     
     If NutritionDashboard.SelectedPlanMeal Is Nothing Then
-        Set NutritionDashboard.SelectedPlanMeal = NutritionDashboard.SelectedPlan.Meals(Worksheets("Dashboard Ernährung").Range("TextMealNr"))
+        Set NutritionDashboard.SelectedPlanMeal = NutritionDashboard.SelectedPlan.Meals(Worksheets("Dashboard Ernährung").Range("Text_Nt_MealId"))
     End If
     
     Set MealFoodItem = NutritionDashboard.SelectedPlanMeal.Foods(FoodId)
@@ -158,10 +121,10 @@ Public Sub Init()
     Dim ActualDate As Date
     ActualDate = Date
     
-    Worksheets("Dashboard Ernährung").Range("TextDateFrom") = ActualDate
-    Worksheets("Dashboard Ernährung").Range("TextDateTo") = ActualDate + 7
+    Worksheets("Dashboard Ernährung").Range("Text_Nt_DateFrom") = ActualDate
+    Worksheets("Dashboard Ernährung").Range("Text_Nt_DateTo") = ActualDate + 7
 End Sub
-Public Sub reset()
+Public Sub Reset()
     NutritionDashboard.ResetSelectedFoodPanel
     
     NutritionDashboard.ResetFoodList
@@ -171,11 +134,11 @@ Public Sub FillSelectedFoodPanel(Item As Food)
     Dim Ws As Worksheet
     Set Ws = ThisWorkbook.Worksheets("Dashboard Ernährung")
     
-    Ws.Range("TextFoodSelectedName").Value = Item.Name
-    Ws.Range("TextFoodSelectedBrand").Value = Item.Brand
-    Ws.Range("TextFoodSelectedAmount").Value = Item.GetDefaultUnit().Amount
-    Ws.Range("ListFoodSelectedUnits").Value = Item.GetDefaultUnit().Name
-    With Ws.Range("ListFoodSelectedUnits").Validation
+    Ws.Range("Text_Nt_FoodSelectedName").Value = Item.Name
+    Ws.Range("Text_Nt_FoodSelectedBrand").Value = Item.Brand
+    Ws.Range("Text_Nt_FoodSelectedAmount").Value = Item.GetDefaultUnit().Amount
+    Ws.Range("List_Nt_FoodSelectedUnits").Value = Item.GetDefaultUnit().Name
+    With Ws.Range("List_Nt_FoodSelectedUnits").Validation
         .Delete
         .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:= _
         xlBetween, Formula1:=Item.GetUnitNames
@@ -194,11 +157,11 @@ Public Sub ResetSelectedFoodPanel()
     Dim Ws As Worksheet
     Set Ws = ThisWorkbook.Worksheets("Dashboard Ernährung")
     
-    Ws.Range("TextFoodSelectedName").Value = ""
-    Ws.Range("TextFoodSelectedBrand").Value = ""
-    Ws.Range("TextFoodSelectedAmount").Value = 0
-    Ws.Range("ListFoodSelectedUnits").Value = ""
-    With Ws.Range("ListFoodSelectedUnits").Validation
+    Ws.Range("Text_Nt_FoodSelectedName").Value = ""
+    Ws.Range("Text_Nt_FoodSelectedBrand").Value = ""
+    Ws.Range("Text_Nt_FoodSelectedAmount").Value = 0
+    Ws.Range("List_Nt_FoodSelectedUnits").Value = ""
+    With Ws.Range("List_Nt_FoodSelectedUnits").Validation
         .Delete
     End With
 End Sub
@@ -227,14 +190,14 @@ Public Sub FillFoodList()
     
     Set Ws = Worksheets("Dashboard Ernährung")
     
-    Name = Ws.Range("TextSearchFoodField")
-    Brand = Ws.Range("TextSearchBrandField")
-    TopCount = Ws.Range("TextSearchTopField")
+    Name = Ws.Range("Text_Nt_SearchFood")
+    Brand = Ws.Range("Text_Nt_SearchBrand")
+    TopCount = Ws.Range("Text_Nt_SearchTop")
     
     'ResetFoodList
     FoodList.Clear
     
-    Set FoodList = NutritionDashboard.PrepareFoodList(Ws.Range("ListFoods"), Name, Brand, TopCount)
+    Set FoodList = NutritionDashboard.PrepareFoodList(Ws.Range("List_Nt_FoodEntries"), Name, Brand, TopCount)
     FoodList.Render
     
     Application.CutCopyMode = False
@@ -280,7 +243,7 @@ Public Sub FillPlanMealList(Plan As NutritionPlan)
     Set Ws = Worksheets("Dashboard Ernährung")
 
     PlanList.Clear
-    Set PlanList = NutritionDashboard.PreparePlanMealList(Ws.Range("ListPlans"), Plan)
+    Set PlanList = NutritionDashboard.PreparePlanMealList(Ws.Range("List_Nt_PlanEntries"), Plan)
     PlanList.Render
 End Sub
 
@@ -309,7 +272,7 @@ Public Sub FillPlanMealFoodList(PlanMeal As NutritionPlanMeal)
     Set Ws = Worksheets("Dashboard Ernährung")
     
     PlanList.Clear
-    Set PlanList = NutritionDashboard.PreparePlanMealFoodList(Ws.Range("ListPlans"), PlanMeal)
+    Set PlanList = NutritionDashboard.PreparePlanMealFoodList(Ws.Range("List_Nt_PlanEntries"), PlanMeal)
     PlanList.Render
 End Sub
 
@@ -320,13 +283,13 @@ Public Sub AddFoodToPlan()
 
     Dim DateFrom As Date, DateTo As Date, IsCheatMeal As Boolean, Weekday As Integer, MealId As Integer, Amount As Double, Unit As String
     
-    DateFrom = Ws.Range("TextDateFrom").Value
-    DateTo = Ws.Range("TextDateTo").Value
-    IsCheatMeal = IIf(Ws.Range("BoolIsCheatmeal").Value = "Ja", True, False)
-    Weekday = IIf(Ws.Range("ListWeekday").Value = "", 0, Ws.Range("ListWeekday").Value)
-    MealId = IIf(Ws.Range("TextMealNr").Value <= 0, 1, Ws.Range("TextMealNr").Value)
-    Amount = Ws.Range("TextFoodSelectedAmount").Value
-    Unit = IIf(Ws.Range("ListFoodSelectedUnits").Value = "", "Gramm", Ws.Range("ListFoodSelectedUnits").Value)
+    DateFrom = Ws.Range("Text_Nt_DateFrom").Value
+    DateTo = Ws.Range("Text_Nt_DateTo").Value
+    IsCheatMeal = IIf(Ws.Range("Check_Nt_IsCheatMeal").Value = "Ja", True, False)
+    Weekday = IIf(Ws.Range("List_Nt_Weekday").Value = "", 0, Ws.Range("List_Nt_Weekday").Value)
+    MealId = IIf(Ws.Range("Text_Nt_MealId").Value <= 0, 1, Ws.Range("Text_Nt_MealId").Value)
+    Amount = Ws.Range("Text_Nt_FoodSelectedAmount").Value
+    Unit = IIf(Ws.Range("List_Nt_FoodSelectedUnits").Value = "", "Gramm", Ws.Range("List_Nt_FoodSelectedUnits").Value)
 
     NutritionPlanDatabase.TryAddFood NutritionDashboard.SelectedFood, Unit, Amount, MealId, DateFrom, DateTo, IsCheatMeal, Weekday
     NutritionDashboard.SelectedPlan.Load DateFrom

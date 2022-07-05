@@ -1,7 +1,7 @@
 Attribute VB_Name = "NutritionPlanDatabase"
 '@TODO: Refactoring
 Public Function GetPlans(DateFrom As Date, DateTo As Date) As Dictionary
-    Dim PlanDateRange As Range, Rng As Range, PlanList As New Dictionary
+    Dim PlanDateRange As Range, rng As Range, PlanList As New Dictionary
     Dim SelectedPlan As NutritionPlan
     
     Dim Tbl As ListObject
@@ -36,15 +36,15 @@ Public Function GetPlans(DateFrom As Date, DateTo As Date) As Dictionary
     Tbl.Range.AutoFilter Field:=1, Criteria1:="=" & DateFrom & ""
 
     Set PlanDateRange = Tbl.ListColumns("Datum").DataBodyRange.SpecialCells(xlCellTypeVisible)
-    For Each Rng In PlanDateRange
+    For Each rng In PlanDateRange
 
-        If Not PlanList.Exists(Rng.Value) Then
+        If Not PlanList.Exists(rng.Value) Then
             Set SelectedPlan = New NutritionPlan
-            SelectedPlan.Load Rng.Value
+            SelectedPlan.Load rng.Value
             
             PlanList.Add SelectedPlan.PlanDate, SelectedPlan
         End If
-    Next Rng
+    Next rng
     
     Tbl.Range.AutoFilter Field:=1
     Set GetPlans = PlanList
@@ -90,23 +90,23 @@ Public Function TryAddFood(FoodItem As Food, UnitName As String, Amount As Doubl
         If Not MealExists Then
             Set MealDataset = MealTbl.ListRows.Add
             
-            MealTbl.ListColumns("Datum").DataBodyRange(MealDataset.index) = CurrentDate
-            MealTbl.ListColumns("MahlzeitenId").DataBodyRange(MealDataset.index) = MealId
+            MealTbl.ListColumns("Datum").DataBodyRange(MealDataset.Index) = CurrentDate
+            MealTbl.ListColumns("MahlzeitenId").DataBodyRange(MealDataset.Index) = MealId
             'MealTbl.ListColumns("Datum").Range(MealDataset.index) = CurrentDate
-            MealTbl.ListColumns("Cheatmeal").DataBodyRange(MealDataset.index) = IsCheatMeal
+            MealTbl.ListColumns("Cheatmeal").DataBodyRange(MealDataset.Index) = IsCheatMeal
         End If
         
         If Not MealFoodExists Then
             Set MealFoodDataset = MealFoodTbl.ListRows.Add
             
-            MealFoodTbl.ListColumns("Datum").DataBodyRange(MealFoodDataset.index) = CurrentDate
-            MealFoodTbl.ListColumns("MahlzeitenId").DataBodyRange(MealFoodDataset.index) = MealId
-            MealFoodTbl.ListColumns("NahrungsmittelId").DataBodyRange(MealFoodDataset.index) = FoodItem.FoodId
-            MealFoodTbl.ListColumns("Geplant").DataBodyRange(MealFoodDataset.index) = IIf(CurrentDate > Date, True, False)
-            MealFoodTbl.ListColumns("Nahrungsmittel").DataBodyRange(MealFoodDataset.index) = FoodItem.Name
-            MealFoodTbl.ListColumns("Marke").DataBodyRange(MealFoodDataset.index) = FoodItem.Brand
-            MealFoodTbl.ListColumns("Einheit").DataBodyRange(MealFoodDataset.index) = UnitName
-            MealFoodTbl.ListColumns("Menge").DataBodyRange(MealFoodDataset.index) = Amount
+            MealFoodTbl.ListColumns("Datum").DataBodyRange(MealFoodDataset.Index) = CurrentDate
+            MealFoodTbl.ListColumns("MahlzeitenId").DataBodyRange(MealFoodDataset.Index) = MealId
+            MealFoodTbl.ListColumns("NahrungsmittelId").DataBodyRange(MealFoodDataset.Index) = FoodItem.FoodId
+            MealFoodTbl.ListColumns("Geplant").DataBodyRange(MealFoodDataset.Index) = IIf(CurrentDate > Date, True, False)
+            MealFoodTbl.ListColumns("Nahrungsmittel").DataBodyRange(MealFoodDataset.Index) = FoodItem.Name
+            MealFoodTbl.ListColumns("Marke").DataBodyRange(MealFoodDataset.Index) = FoodItem.Brand
+            MealFoodTbl.ListColumns("Einheit").DataBodyRange(MealFoodDataset.Index) = UnitName
+            MealFoodTbl.ListColumns("Menge").DataBodyRange(MealFoodDataset.Index) = Amount
         End If
     Next i
 
@@ -119,7 +119,7 @@ Public Sub DeleteMeal(PlanMeal As NutritionPlanMeal)
 
     Dim Tbl As ListObject
     
-    Dim Rng As Range
+    Dim rng As Range
     
     For Each FoodKey In PlanMeal.Foods.Keys
         Set FoodItem = PlanMeal.Foods(FoodKey)
@@ -134,9 +134,9 @@ Public Sub DeleteMeal(PlanMeal As NutritionPlanMeal)
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("MahlzeitenId").Range.Column, Criteria1:="=" & PlanMeal.Id & ""
     
     Application.DisplayAlerts = False
-    For Each Rng In Tbl.DataBodyRange.SpecialCells(xlCellTypeVisible)
-        Rng.EntireRow.Delete
-    Next Rng
+    For Each rng In Tbl.DataBodyRange.SpecialCells(xlCellTypeVisible)
+        rng.EntireRow.Delete
+    Next rng
     Application.DisplayAlerts = True
     
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Datum").Range.Column
@@ -146,7 +146,7 @@ End Sub
 
 Public Sub DeleteMealFood(PlanMealFood As NutritionPlanMealFood)
     Dim Tbl As ListObject
-    Dim Rng As Range
+    Dim rng As Range
 
     Set Tbl = NutritionConfigs.MealFoodTable
     
@@ -155,9 +155,9 @@ Public Sub DeleteMealFood(PlanMealFood As NutritionPlanMealFood)
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("NahrungsmittelId").Range.Column, Criteria1:="=" & PlanMealFood.FoodId & ""
     
     Application.DisplayAlerts = False
-    For Each Rng In Tbl.DataBodyRange.SpecialCells(xlCellTypeVisible)
-        Rng.EntireRow.Delete
-    Next Rng
+    For Each rng In Tbl.DataBodyRange.SpecialCells(xlCellTypeVisible)
+        rng.EntireRow.Delete
+    Next rng
     Application.DisplayAlerts = True
     
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Datum").Range.Column

@@ -20,15 +20,16 @@ Public Sub FillBodyList(SelectedRng As Range, DateFrom As Date, Optional WeightF
 End Sub
 
 Public Function GetBodies(Optional DateFrom As Date, Optional WeightFilter As String = "", Optional FatFilter As String = "") As Dictionary
-    Dim Ws As Worksheet
-    Dim BodyIdRange As Range, Rng As Range, BodyList As New Dictionary
-    Dim ItemCount As Integer
+    Dim BodyIdRange As Range, rng As Range, BodyList As New Dictionary
     Dim SelectedBody As Body
-    
     Dim Tbl As ListObject
+
+    Set Tbl = BodyConfigs.BodyTable
     
-    Set Ws = Worksheets(Configs.BodyWorksheetName)
-    Set Tbl = Ws.ListObjects("TblBody")
+    If BodyExists(DateFrom, WeightFilter, FatFilter) = False Then
+        Set GetBodies = New Dictionary
+        Exit Function
+    End If
     
     Tbl.Sort.SortFields.Clear
     Tbl.Sort.SortFields.Add2 Key:=Tbl.ListColumns("Datum").Range, SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:=xlSortNormal
@@ -39,9 +40,7 @@ Public Function GetBodies(Optional DateFrom As Date, Optional WeightFilter As St
         .SortMethod = xlPinYin
         .Apply
     End With
-    
-    On Error GoTo Err:
-    
+
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Datum").Range.Column, Criteria1:=">" & CLng(DateFrom), _
             Operator:=xlAnd
     
@@ -53,27 +52,29 @@ Public Function GetBodies(Optional DateFrom As Date, Optional WeightFilter As St
         Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Fett").Range.Column, Criteria1:=FatFilter, _
             Operator:=xlAnd
     End If
-    
-    
-    
+
     Set BodyIdRange = Tbl.ListColumns("Datum").DataBodyRange.SpecialCells(xlCellTypeVisible)
-    ItemCount = 1
-    For Each Rng In BodyIdRange
-        
+
+    For Each rng In BodyIdRange
         Set SelectedBody = New Body
-        SelectedBody.Load Rng.Value
+        SelectedBody.Load rng.Value
         
         BodyList.Add SelectedBody.PlanDate, SelectedBody
-    Next Rng
+    Next rng
     
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Datum").Range.Column
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Gewicht").Range.Column
     Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Fett").Range.Column
     Set GetBodies = BodyList
-    Exit Function
-Err:
-    Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Datum").Range.Column
-    Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Gewicht").Range.Column
-    Tbl.Range.AutoFilter Field:=Tbl.ListColumns("Fett").Range.Column
+
 End Function
 
+Public Function BodyExists(Optional DateFrom As Date, Optional WeightFilter As String = "", Optional FatFilter As String = "")
+    Dim i As Long
+    Dim Tbl As ListObject
+    Set Tbl = BodyConfigs.BodyTable
+    
+    i = WorksheetFunction.CountIfs(Tbl.ListColumns("Datum").Range, ">" & CLng(DateFrom), Tbl.ListColumns("Gewicht").Range, WeightFilter, Tbl.ListColumns("Fett").Range, FatFilter)
+    BodyExists = IIf(i > 0, True, False)
+    
+End Function

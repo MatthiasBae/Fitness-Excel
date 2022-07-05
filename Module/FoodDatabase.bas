@@ -1,6 +1,6 @@
 Attribute VB_Name = "FoodDatabase"
 Public Function GetFoods(Name As String, Brand As String, Optional TopCount As Integer) As Dictionary
-    Dim FoodIdRange As Range, Rng As Range, FoodList As New Dictionary
+    Dim FoodIdRange As Range, rng As Range, FoodList As New Dictionary
     Dim ItemCount As Integer
     Dim SelectedFood As Food
     
@@ -14,17 +14,17 @@ Public Function GetFoods(Name As String, Brand As String, Optional TopCount As I
 
     Set FoodIdRange = Tbl.ListColumns("NahrungsmittelId").DataBodyRange.SpecialCells(xlCellTypeVisible)
     ItemCount = 1
-    For Each Rng In FoodIdRange
+    For Each rng In FoodIdRange
         
         Set SelectedFood = New Food
-        SelectedFood.Load Rng.Value
+        SelectedFood.Load rng.Value
         
         FoodList.Add SelectedFood.FoodId, SelectedFood
         If ItemCount >= TopCount Then
             Exit For
         End If
         ItemCount = ItemCount + 1
-    Next Rng
+    Next rng
     
     Tbl.Range.AutoFilter Field:=11
     Tbl.Range.AutoFilter Field:=12

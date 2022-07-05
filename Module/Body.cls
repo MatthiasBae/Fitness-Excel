@@ -61,8 +61,6 @@ Public Function GetButton() As Shape
     ShpDup.GroupItems("BtnTemplate_Body_Date").Name = Printf("BtnBody_Date_{0}", Format(Me.PlanDate, "yyyyMMdd"))
     ShpDup.GroupItems("BtnTemplate_Body_Weight").Name = Printf("BtnBody_Weight_{0}", Format(Me.PlanDate, "yyyyMMdd"))
     ShpDup.GroupItems("BtnTemplate_Body_Fat").Name = Printf("BtnBody_Fat_{0}", Format(Me.PlanDate, "yyyyMMdd"))
-    ShpDup.GroupItems("BtnTemplate_Body_Delete").OnAction = "DeleteBody"
-    ShpDup.GroupItems("BtnTemplate_Body_Delete").Name = Printf("BtnBody_Delete_{0}", Format(Me.PlanDate, "yyyyMMdd"))
     ShpDup.Name = Printf("BtnBody_{0}", Format(Me.PlanDate, "yyyyMMdd"))
     
     Set GetButton = ShpDup
