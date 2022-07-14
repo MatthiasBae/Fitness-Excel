@@ -21,7 +21,7 @@ Public Sub LoadPlan(SelectedDate As Date)
     Dim Result As Range
 
     Set Tbl = NutritionConfigs.MealTable
-    Set Result = Tbl.ListColumns("Datum").Range.Find(What:=SelectedDate, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = Tbl.ListColumns("Datum").Range.Find(what:=SelectedDate, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No Plan found with for date {0}", SelectedDate)
@@ -39,7 +39,7 @@ Public Sub LoadPlanMeals(SelectedDate As Date)
 
     Set Tbl = NutritionConfigs.MealTable
     Set SearchRange = Tbl.ListColumns("Datum").Range
-    Set Result = SearchRange.Find(What:=SelectedDate, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = SearchRange.Find(what:=SelectedDate, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No PlanMeal found for Date {0}", SelectedDate)

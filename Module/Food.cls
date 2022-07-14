@@ -15,13 +15,19 @@ Public Brand As String
 Public ACG1 As String
 Public ACG2 As String
 Public ACG3 As String
+Public IsRecipe As Boolean
+
 
 Public Attributes As New FoodAttributes
 Public Units As New Dictionary
+Public Ingredients As New Dictionary
 
 Public Sub Load(SelectedId As Long)
     Me.LoadFood SelectedId
     Me.LoadFoodUnits SelectedId
+    If Me.IsRecipe Then
+        Me.LoadFoodIngredients SelectedId
+    End If
 End Sub
 
 Public Sub LoadFood(SelectedId As Long)
@@ -29,7 +35,7 @@ Public Sub LoadFood(SelectedId As Long)
     Dim Result As Range
     
     Set Tbl = FoodConfigs.FoodTable
-    Set Result = Tbl.ListColumns("NahrungsmittelId").Range.Find(What:=SelectedId, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = Tbl.ListColumns("NahrungsmittelId").Range.Find(what:=SelectedId, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No Food found with Id {0}", SelectedId)
@@ -44,11 +50,12 @@ Public Sub LoadFood(SelectedId As Long)
     Me.ACG1 = Tbl.ListColumns("KategorieLevel1").Range.Rows(Result.Row).Value
     Me.ACG2 = Tbl.ListColumns("KategorieLevel2").Range.Rows(Result.Row).Value
     Me.ACG3 = Tbl.ListColumns("KategorieLevel3").Range.Rows(Result.Row).Value
+    Me.IsRecipe = Tbl.ListColumns("Rezept").Range.Rows(Result.Row).Value
     Attributes.Gluten = Tbl.ListColumns("Gluten").Range.Rows(Result.Row).Value
     Attributes.NutritionScore = Tbl.ListColumns("Nutritionscore").Range.Rows(Result.Row).Value
     Attributes.Vegan = Tbl.ListColumns("Vegan").Range.Rows(Result.Row).Value
     Attributes.Vegetarian = Tbl.ListColumns("Vegetarisch").Range.Rows(Result.Row).Value
-
+    
 End Sub
 
 Public Sub LoadFoodUnits(SelectedId As Long)
@@ -59,7 +66,7 @@ Public Sub LoadFoodUnits(SelectedId As Long)
 
     Set Tbl = FoodConfigs.FoodUnitsTable
     Set SearchRange = Tbl.ListColumns("NahrungsmittelId").Range
-    Set Result = SearchRange.Find(What:=SelectedId, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = SearchRange.Find(what:=SelectedId, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No FoodUnit found for Food found with Id {0}", SelectedId)
@@ -88,7 +95,36 @@ Public Sub LoadFoodUnits(SelectedId As Long)
         Set Result = SearchRange.FindNext(Result)
     Loop While Not Result Is Nothing And FirstFoundAddress <> Result.Address
 End Sub
+Public Sub LoadFoodIngredients(SelectedId As Long)
+    Dim Tbl As ListObject
+    Dim Result As Range, SearchRange As Range, FirstFoundAddress As String
+    
+    Dim Ingredient As FoodIngredient
 
+    Set Tbl = FoodConfigs.FoodIngredientsTable
+    Set SearchRange = Tbl.ListColumns("RezeptId").Range
+    Set Result = SearchRange.Find(what:=SelectedId, LookIn:=xlValues, lookat:=xlWhole)
+    
+    If Result Is Nothing Then
+        Debug.Print Printf("No Ingredient found for Recipe found with Id {0}", SelectedId)
+        Exit Sub
+    End If
+    
+    FirstFoundAddress = Result.Address
+    
+    Do
+        Set Ingredient = New FoodIngredient
+        
+        Ingredient.RecipeId = Tbl.ListColumns("RezeptId").Range.Rows(Result.Row).Value
+        Ingredient.IngredientId = Tbl.ListColumns("ZutatenId").Range.Rows(Result.Row).Value
+        Ingredient.Unit = Tbl.ListColumns("Einheit").Range.Rows(Result.Row).Value
+        Ingredient.Amount = Tbl.ListColumns("Menge").Range.Rows(Result.Row).Value
+
+        Me.TryAddIngredient Ingredient.IngredientId, Ingredient
+        
+        Set Result = SearchRange.FindNext(Result)
+    Loop While Not Result Is Nothing And FirstFoundAddress <> Result.Address
+End Sub
 
 Public Function TryAddUnit(Name As String, Unit As FoodUnit) As Boolean
 
@@ -104,7 +140,20 @@ End Function
 Public Sub AddUnit(Name As String, Unit As FoodUnit)
     Me.Units.Add Name, Unit
 End Sub
+Public Function TryAddIngredient(IngredientId As Long, Ingredient As FoodIngredient) As Boolean
 
+    If Me.Ingredients.Exists(IngredientId) Then
+        TryAddIngredient = False
+        Exit Function
+    End If
+    
+    Me.AddIngredient IngredientId, Ingredient
+    TryAddIngredient = True
+End Function
+
+Public Sub AddIngredient(IngredientId As Long, Ingredient As FoodIngredient)
+    Me.Ingredients.Add IngredientId, Ingredient
+End Sub
 Public Function GetDefaultUnit() As FoodUnit
     Dim Unit As New FoodUnit
     Dim Item As New FoodUnit, Key As Variant

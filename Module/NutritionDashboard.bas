@@ -290,7 +290,12 @@ Public Sub AddFoodToPlan()
     MealId = IIf(Ws.Range("Text_Nt_MealId").Value <= 0, 1, Ws.Range("Text_Nt_MealId").Value)
     Amount = Ws.Range("Text_Nt_FoodSelectedAmount").Value
     Unit = IIf(Ws.Range("List_Nt_FoodSelectedUnits").Value = "", "Gramm", Ws.Range("List_Nt_FoodSelectedUnits").Value)
-
+    
+    If NutritionDashboard.SelectedFood Is Nothing Then
+        MsgBox "Bitte wähle ein Nahrungsmittel aus", vbExclamation, "Fehler"
+        Exit Sub
+    End If
+    
     NutritionPlanDatabase.TryAddFood NutritionDashboard.SelectedFood, Unit, Amount, MealId, DateFrom, DateTo, IsCheatMeal, Weekday
     NutritionDashboard.SelectedPlan.Load DateFrom
     FillPlanMealList NutritionDashboard.SelectedPlan

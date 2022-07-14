@@ -24,7 +24,7 @@ Public Sub LoadMealFoods(SelectedDate As Date)
 
     Set Tbl = NutritionConfigs.MealFoodTable
     Set SearchRange = Tbl.ListColumns("Datum").Range
-    Set Result = SearchRange.Find(What:=SelectedDate, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = SearchRange.Find(what:=SelectedDate, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No PlanMealFood found for Date {0}", SelectedDate)

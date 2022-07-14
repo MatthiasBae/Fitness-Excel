@@ -16,9 +16,9 @@ Private Sub Class_Initialize()
     Colums = 1
 End Sub
 
-Public Sub Initialize(Rng As Range, columnCount As Long)
+Public Sub Initialize(rng As Range, columnCount As Long)
     Me.SetColumns columnCount
-    Set Section = Rng
+    Set Section = rng
 End Sub
 
 Public Sub Add(Btn As Shape)

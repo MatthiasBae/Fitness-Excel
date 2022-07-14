@@ -24,7 +24,7 @@ Public Sub Load()
     Dim Result As Range
 
     Set Tbl = SummaryConfigs.SummaryTable
-    Set Result = Tbl.ListColumns("Datum").Range.Find(What:=SelectedDate, LookIn:=xlValues, LookAt:=xlWhole)
+    Set Result = Tbl.ListColumns("Datum").Range.Find(what:=SelectedDate, LookIn:=xlValues, lookat:=xlWhole)
     
     If Result Is Nothing Then
         Debug.Print Printf("No Summary found with for date {0}", SelectedDate)
