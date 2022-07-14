@@ -7,19 +7,34 @@ Erstellt wurde die Excel Datei mit Excel 365.
 Minimum erforderliche Version ist Excel 2010
 
 # Features
+## Ernährung
 - Hinzufügen von Nahrungsmittel zum Ernährungsplan für einen dir vorgegebenen Zeitraum
-- Hinzufügen von Nahrungsmittel zur Datenbank (aktuell noch manuelles eintragen in die Tabelle)
-- Berechnung vom Kalorienverbrauch (2 Arten)
+- Hinzufügen von Nahrungsmittel zur Datenbank
+- Berechnung vom Kalorienverbrauch
   * Über das Tabellenblatt "Einstellungen" kann eine eigene Formel hinterlegt werden
-  * Der Wert muss in das Tabellenblatt "Rohdaten_Nährstoffverteilung" eingetragen werden
+  * Der Wert muss in das Tabellenblatt "Rohdaten_Nährstoffverteilung" eingetragen werden (wird noch automatisiert)
+## Körper
+- Anlegen des Gewichts auf Tagesbasis
 
+
+## Dashboard
 - Übersicht/Dashboard deiner Gewichtseinträge inklusive Filtermöglichkeit und Möglichkeit diese zu löschen
-- Einbauen einer Einführung die einem alles erklärt
 
 # Geplante Features
-- Kalorienberechnung
+## Ernährung
+- Berechnung vom Kalorienverbrauch
   * Hinzufügen neuer Kennzahlen (Kennzahlen können auch von euch angelegt werden. Tabellenblatt "Rohdaten_KPIs")
-- Hinzufügen von Mahlzeitennamen die man selber festlegen kann
+  * Auswahl zwischen Tagesgenauer Berechnung oder Berechnung pro Woche
+- Hinzufügen von individuell festlegbaren Mahlzeitennamen
+- Erstellung von Rezepten
+  * Download von Rezepten von Chefkoch.de
+  * Download von Rezepten von zusätzlich anderen Seiten (noch nicht definiert)
+  * 
+## Dashboard
 - Hinzufügen neuer Charts aufs Dashboard
+  * Zeitverlauf des Gewichts
+  * Soll vs. Ist Vergleich der verbrannten Kalorien / gegessenen Kalorien
+  * Zielerreichung
+
+## Training
 - Erstellung von Trainingsplänen
-- (Vielleicht) Anbindung an Fitbit API
